@@ -6,6 +6,8 @@
       <img id="asky2" src="../../assets/heic0714g.jpg" alt="" />
       <!-- floor -->
       <img id="floor" src="../../assets/crop.jpeg" alt="" />
+
+      <!-- modelling -->
     </a-assets>
     <a-sky src="#asky" rotation="0 65 0" repeat="#asky" v-if="test"></a-sky>
     <a-sky src="#asky2" rotation="0 65 0" repeat="#asky" v-else></a-sky>
@@ -35,25 +37,21 @@
     ></a-text>
 
     <a-text
-      @click="box"
       cursor="rayOrigin: mouse"
       width="22"
-      value="create room"
+      value="True"
       geometry="primitive:plane"
       animation="property: position; from: -6 0.7 -5; to: -6 0.9 -5; loop: true; dir: alternate; easing:linear;dur:1000"
-      v-if="test"
     >
     </a-text>
 
     <a-text
-      @click="box2"
       width="22"
       align="right"
       cursor="rayOrigin: mouse"
-      value="joinroom"
+      value="False"
       geometry="primitive:plane"
       animation="property: position; from: 6 0.7 -5; to: 6 0.9 -5; loop: true; dir: alternate; easing:linear;dur:1000"
-      v-else
     ></a-text>
   </a-scene>
 </template>
@@ -68,16 +66,16 @@ export default {
       color: '',
       positions: [
         {
-          name: '6 3 -6',
-          score: '7 3 -6',
+          name: '2 3 -13',
+          score: '3 3 -13',
         },
         {
-          name: '6 4 -6',
-          score: '7 4 -6',
+          name: '2 4 -13',
+          score: '3 4 -13',
         },
         {
-          name: '6 5 -6',
-          score: '7 5 -6',
+          name: '2 5 -13',
+          score: '3 5 -13',
         },
       ],
       players: [
@@ -100,12 +98,12 @@ export default {
     };
   },
   methods: {
-    box() {
+    yes() {
       this.color = 'blue';
       this.point++;
       this.test = false;
     },
-    box2() {
+    no() {
       this.color = 'magenta';
       this.point++;
       this.test = true;
