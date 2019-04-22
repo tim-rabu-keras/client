@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'roomone',
   data() {
@@ -95,6 +97,7 @@ export default {
           status: 'idle',
         },
       ],
+      question: null,
     };
   },
   methods: {
@@ -108,6 +111,20 @@ export default {
       this.point++;
       this.test = true;
     },
+    async getQuestion() {
+      try {
+        const { data } = await axios.get(
+          'https://opentdb.com/api.php?amount=50&type=boolean&difficulty=hard',
+        );
+        this.question = data;
+        console.log(this.question, 'iniiiii question');
+      } catch (e) {
+        console.log(e.response, 'ini error');
+      }
+    },
+  },
+  mounted() {
+    this.getQuestion();
   },
 };
 </script>
