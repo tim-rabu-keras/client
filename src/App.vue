@@ -6,9 +6,33 @@
         <span class="font-weight-light"> Benar Salah</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn dark class="qbsBtn" origin="center center">Create Room</v-btn>
+      <v-btn dark class="qbsBtn" @click="accountDialog = true" origin="center center">Create Account</v-btn>
     </v-toolbar>
     <router-view />
+    <v-layout row justify-center>
+    <v-dialog v-model="accountDialog" max-width="300px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Create Account</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap align-center justify-center fill-height>
+                <v-flex xs12 sm6 md6 lg6>
+                  <v-text-field label="Username" required></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+            <small>*indicates required field</small>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click="accountDialog = false">Close</v-btn>
+            <v-btn color="blue darken-1" flat>Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
   </v-app>
 </template>
 
@@ -22,8 +46,8 @@ export default {
   },
   data() {
     return {
-      //
-    }
+      accountDialog: false,
+    };
   },
   mounted() {
     this.$store.dispatch('getAllRooms')
