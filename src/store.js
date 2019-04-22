@@ -5,12 +5,21 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-
+    worlds: [
+      {
+        sky: '',
+        plain: '',
+      },
+      {
+        sky: '',
+        plain: '',
+      },
+      {
+        sky: '',
+        plain: '',
+      },
+    ],
   },
-  mutations: {
-
-  },
-  actions: {
-
-  },
+  mutations: {},
+  actions: {},
 });
