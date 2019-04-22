@@ -23,9 +23,12 @@ export default {
   data() {
     return {
       //
-    };
+    }
   },
-};
+  created() {
+    this.$store.dispatch('getAllRooms')
+  }
+}
 </script>
 <style <style scoped>
 
