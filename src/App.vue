@@ -60,7 +60,7 @@
       </v-card>
     </v-dialog>
     </v-layout>
-    <router-view/>
+    <!-- <router-view/> -->
   </v-app>
 </template>
 
