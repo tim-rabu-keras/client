@@ -33,7 +33,7 @@
       </v-dialog>
     </v-layout>
     <v-layout>
-    <v-dialog
+    <v-dialog v-if="position===false"
       v-model="$store.state.keyForm"
       class="keyForm"
       width="500"
@@ -68,6 +68,7 @@
 import HelloWorld from "./components/HelloWorld";
 import axios from "axios";
 import db from "@/api/firebase";
+import { mapState } from "vuex";
 
 export default {
   name: "App",
@@ -106,10 +107,14 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getAllRooms')
+    this.$store.dispatch('getOneRoom')
     console.log(this.$store.state.room, 'ini room')
     this.$store.dispatch('getAllQuiz')
     console.log(this.$store.state.quiz.allQuiz, 'ini quiz')
   },
+  computed: {
+    computed: mapState(["position"])
+  }
 }
 </script>
 <style <style scoped>

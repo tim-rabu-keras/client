@@ -73,7 +73,7 @@ export default {
     joinRoom() {
       this.test = true;
       new Audio('http://soundbible.com/mp3/PINGAS-Richard-89282878.mp3').play();
-      this.$router.push('/room');
+      this.$router.push('/rooms');
     },
   },
   mounted() {
