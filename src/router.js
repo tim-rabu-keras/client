@@ -14,11 +14,8 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/room',
+      path: '/rooms',
       name: 'room',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('./views/Rooms.vue'),
       children: [
         {
@@ -27,6 +24,16 @@ export default new Router({
           component: () => import('./components/room/roomone.vue'),
         },
       ],
+    },
+    {
+      path: '/createroom',
+      name: 'createroom',
+      component: () => import('./views/CreateRoom.vue'),
+    },
+    {
+      path: '/join/:id',
+      name: 'joinRoom',
+      component: () => import('./views/JoinRoom.vue'),
     },
   ],
 });

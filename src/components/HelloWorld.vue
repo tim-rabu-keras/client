@@ -65,9 +65,9 @@ export default {
       // this.ischeck = false;
       this.$router.push('/createroom');
     },
-    join() {
+    joinroom() {
       this.test = true;
-      this.$router.push('/room');
+      this.$router.push('/rooms');
     },
   },
 };

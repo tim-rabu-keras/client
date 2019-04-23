@@ -1,4 +1,5 @@
 <template lang="html">
+<v-container fluid fill-height pa-0>
   <a-scene embedded id="vr">
     <a-assets>
       <!-- sky -->
@@ -17,8 +18,8 @@
       scale="10000 10000 1"
     >
     </a-plane>
-
     <a-text
+      v-if="$store.state.validPlayer"
       scale="1.5 2 3"
       v-for="(player, i) in players"
       color="#EEEE00"
@@ -28,6 +29,7 @@
       :value="player.name"
     ></a-text>
     <a-text
+      v-if="$store.state.validPlayer"
       v-for="(player, i) in players"
       :color="color"
       v-bind:position="positions[i].score"
@@ -37,6 +39,7 @@
     ></a-text>
 
     <a-text
+      v-if="$store.state.validPlayer"
       cursor="rayOrigin: mouse"
       width="10"
       v-bind:value="currentQuestion"
@@ -46,6 +49,7 @@
     </a-text>
 
     <a-text
+      v-if="$store.state.validPlayer"
       @click="yes"
       cursor="rayOrigin: mouse"
       width="6.8"
@@ -55,6 +59,7 @@
     >
     </a-text>
     <a-text
+      v-if="$store.state.validPlayer"
       @click="no"
       cursor="rayOrigin: mouse"
       width="6.8"
@@ -63,16 +68,8 @@
       animation="property: position; from: 1 0.44 -3; to: 1 0.58 -3; loop: true; dir: alternate; easing:linear;dur:1200"
     >
     </a-text>
-
-    <!-- <a-text
-      width="10"
-      align="right"
-      cursor="rayOrigin: mouse"
-      :value="question.results[1].question"
-      geometry="primitive:plane"
-      animation="property: position; from: 6 0.7 -5; to: 6 0.9 -5; loop: true; dir: alternate; easing:linear;dur:1000"
-    ></a-text> -->
   </a-scene>
+</v-container>
 </template>
 
 <script>
@@ -151,10 +148,13 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
     this.getQuestion();
-    this.currentQuestion = this.question[0].question;
+    //this.currentQuestion = this.question[0].question;
     this.currentQuestion = 'after created';
+    this.$store.dispatch('getOneRoom', this.$route.params.id)
+    console.log(`is valid? ${this.$store.state.validPlayer}`);
+    this.$store.commit('setKeyForm', true);
   },
 };
 </script>
@@ -163,4 +163,11 @@ export default {
 .vr {
   height: 740px
 }
+
+.keyForm {
+  position: absolute;
+  top: 100px;
+  z-index: 100;
+}
+
 </style>
