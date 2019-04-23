@@ -3,7 +3,7 @@
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
         <span class="brand">Trivia Quiz |</span>
-        <span class="font-weight-light"> Benar Salah</span>
+        <span class="font-weight-light">Benar Salah</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn dark class="qbsBtn" @click="accountDialog = true" origin="center center">Create Account</v-btn>
@@ -60,16 +60,19 @@
       </v-card>
     </v-dialog>
     </v-layout>
+    <!-- <router-view/> -->
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import HelloWorld from "./components/HelloWorld";
+import axios from "axios";
+import db from "@/api/firebase";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld,
+    HelloWorld
   },
   data() {
     return {
@@ -103,11 +106,12 @@ export default {
   mounted() {
     this.$store.dispatch('getAllRooms')
     console.log(this.$store.state.room, 'ini room')
+    this.$store.dispatch('getAllQuiz')
+    console.log(this.$store.state.quiz.allQuiz, 'ini quiz')
   },
 }
 </script>
 <style <style scoped>
-
 .brand {
   letter-spacing: 5px;
   font-weight: 700;
@@ -134,7 +138,6 @@ export default {
   background-color: rgb(22, 105, 153);
   size: 70px;
   transform: scale(1.1);
-  box-shadow: 3px 5px 24px 10px   rgba(67, 166, 231, 0.8);
+  box-shadow: 3px 5px 24px 10px rgba(67, 166, 231, 0.8);
 }
-
 </style>
