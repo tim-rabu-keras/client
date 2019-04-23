@@ -19,7 +19,7 @@
             <v-container>
               <v-layout wrap align-center justify-center fill-height>
                 <v-flex xs12 sm12 md12 lg12>
-                  <v-text-field label="Username" required></v-text-field>
+                  <v-text-field label="Username" v-model="userName" required></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -27,7 +27,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click="accountDialog = false">Close</v-btn>
-            <v-btn color="blue darken-1" flat @click="$store.dispatch('')">Submit</v-btn>
+            <v-btn color="blue darken-1" flat @click="$store.dispatch('createUser', userName)">Submit</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       accountDialog: false,
+      userName: '',
     };
   },
   mounted() {

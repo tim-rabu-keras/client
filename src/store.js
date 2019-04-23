@@ -3,7 +3,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import db from './api/firebase';
-import { async } from 'q';
 
 Vue.use(Vuex);
 
@@ -62,7 +61,7 @@ export default new Vuex.Store({
       } else {
         state.room = payload;
       }
-    }
+    },
   },
   actions: {
     getAllQuiz(context) {
@@ -99,10 +98,11 @@ export default new Vuex.Store({
         });
     },
     createUser(context, payload) {
+      console.log(`create user...${payload}`);
       db
         .collection('user')
         .add({
-          name: payload.name,
+          name: payload,
           score: 0,
           status: 'idle',
         })
@@ -130,42 +130,17 @@ export default new Vuex.Store({
         });
     },
     getAllRooms(context) {
-      console.log('masuk ke all')
+      console.log('masuk ke all');
       // context.commit('changeRooms', []);
-      db
-        .collection('room')
-        .onSnapshot((querySnapshot) => {
-          console.log(querySnapshot)
-          console.log(typeof querySnapshot)
-          querySnapshot.forEach((doc) => {
-            // console.log(doc.data())
-            console.log(doc, 'ini doc')
-            context.commit('changeRooms', { id: doc.id, ...doc.data() })
-          });
-        })
-      // .get()
-      // .then((data) => {
-      //   console.log(data[0].data())
-      // })
-      // .onSnapshot(async (querySnapshot) => {
-      //   // const result = await Promise.all(
-      //   //   querySnapshot.docs.map(async (e) => {
-      //   //     const data = { id: e.id, ...e.data() }
-      //   //     data.user = await db.collection('user').doc(data.userId).get();
-      //   //     return data;
-      //   //   }),
-      //   // );
-      //   console.log(querySnapshot);
-      //   // context.commit('changeRooms', querySnapshot);
-      //   // querySnapshot.forEach((doc) => {
-      //   //   const newData = {
-      //   //     id: doc.id,
-      //   //     ...doc.data(),
-      //   //   };
-      //   // console.log(newData);
-      //   // context.commit('changeRooms', newData);
-      //   // });
-      // });
+      db.collection('room').onSnapshot((querySnapshot) => {
+        console.log(querySnapshot);
+        console.log(typeof querySnapshot);
+        querySnapshot.forEach((doc) => {
+          // console.log(doc.data())
+          console.log(doc, 'ini doc');
+          context.commit('changeRooms', { id: doc.id, ...doc.data() });
+        });
+      });
     },
     getOneRoom(context, id) {
       context.commit('changeRoom', '');
