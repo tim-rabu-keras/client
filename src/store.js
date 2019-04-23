@@ -95,9 +95,9 @@ export default new Vuex.Store({
       context.state.keyForm = false;
       context.state.setValidPlayer = true;
       let data;
-      const docRef = db.collection("room").doc(payload.id);
+      // let docRef = db.collection('room').doc(payload.id);
 
-      docRef.get()
+      db.collection('room').doc(payload.id).get()
         .then((response) => {
           data = response.data();
           data.players.push({ name: localStorage.getItem('name'), score: 0, status: 'active' });
@@ -106,10 +106,9 @@ export default new Vuex.Store({
             .doc(payload.id)
             .update({ players: data.players })
             .then((result) => {
-              console.log('**********', result);
-              if (response !== null) {
-                context.room('changeRoom', result);
-              }
+              db.collection('room').doc(payload.id).get();
+              context.commit('changeRoom', db.collection('room').doc(payload.id).get());
+              context.commit('setValidPlayer', true);
             });
         })
         .catch((err) => {
@@ -156,6 +155,8 @@ export default new Vuex.Store({
         });
     },
     createRoom(context, payload) {
+      console.log('masuk ke create room')
+      console.log(payload, 'ini payload')
       db
         .collection('room')
         .add({
@@ -165,12 +166,13 @@ export default new Vuex.Store({
             userId: localStorage.getItem('id'),
             name: localStorage.getItem('name'),
             score: 0,
-            status: 'active'
+            status: 'active',
           }],
           key: payload.key,
-          question: [context.state.quiz.allQuiz],
+          // question: [context.state.quiz.allQuiz],
         })
         .then((response) => {
+          console.log(response, 'ini responesssss')
           context.commit('changeRoom', response);
           router.push(`/rooms/${response.id}`);
         })
