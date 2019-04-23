@@ -130,9 +130,14 @@ export default new Vuex.Store({
         });
     },
     getAllRooms(context) {
-      context.commit('changeRooms', []);
+      // context.commit('changeRooms', []);
       db
         .collection('room')
+        .onSnapshot((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            context.commit('changeRooms', { id: doc.id, ...doc.data() })
+          });
+        })
       // .get()
       // .then((data) => {
       //   console.log(data[0].data())
