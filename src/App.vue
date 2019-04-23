@@ -95,7 +95,8 @@ export default {
 
       if(this.$store.state.room.key === this.roomKey) {
         this.$store.dispatch('joinRoom', {id: this.$route.params.id, ...this.$store.state.room})
-
+        // this.$store.dispatch('changePosition', true)
+        this.$store.dispatch('getOneRoom')
       }
       else {
         this.isError = true;
