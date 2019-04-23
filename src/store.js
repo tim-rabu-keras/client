@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import db from './api/firebase';
+import { async } from 'q';
 import router from './router';
 
 Vue.use(Vuex);
@@ -78,8 +79,8 @@ export default new Vuex.Store({
       axios
         .get('https://opentdb.com/api.php?amount=50&type=boolean&difficulty=hard')
         .then(({ data }) => {
-          console.log(data)
-          context.commit('changeAllQuiz', data);
+          console.log(data.results, 'ini data')
+          context.commit('changeAllQuiz', data.results);
         })
         .catch((err) => {
           console.log(err);
@@ -158,9 +159,16 @@ export default new Vuex.Store({
       db
         .collection('room')
         .add({
+          name: payload.roomName,
           status: 'idle',
-          players: [{ userId: localStorage.getItem('id'), name: payload.name, status: 'active' }],
+          players: [{
+            userId: localStorage.getItem('id'),
+            name: localStorage.getItem('name'),
+            score: 0,
+            status: 'active'
+          }],
           key: payload.key,
+          question: [context.state.quiz.allQuiz],
         })
         .then((response) => {
           context.commit('changeRoom', response);
@@ -216,5 +224,16 @@ export default new Vuex.Store({
           console.log(err);
         });
     },
+    closeRoom(context, id) {
+      db.collection('room')
+        .doc(id)
+        .delete()
+        .then(() => {
+          router.push('/')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   },
 });
