@@ -72,7 +72,7 @@ export default new Vuex.Store({
         state.room = '';
       } else {
         state.room = payload;
-        
+
       }
     },
     changePosition(state, payload) {
@@ -102,22 +102,31 @@ export default new Vuex.Store({
       context.state.setValidPlayer = true;
       let data;
       let docRef = db.collection('room').doc(payload.id);
- 
+
       db.collection('room').doc(payload.id).get()
         .then((response) => {
           data = response.data();
-          data.players.push({ name: localStorage.getItem('name'), score: 0, status: 'active' });
- 
-          db.collection('room')
-            .doc(payload.id)
-            .update({ players: data.players })
-            .then((result) => {
-              docRef = db.collection('room').doc(payload.id);
-              docRef.get().then((doc) => {
-                context.commit('changeRoom', doc.data());
-                context.commit('setValidPlayer', true);
-              });
-            });
+          if (data.players.length < 2) {
+            if (data.players[0].userId !== localStorage.getItem('id')) {
+              data.players.push({ userId: localStorage.getItem('id'), name: localStorage.getItem('name'), score: 0, status: 'active' });
+              db.collection('room')
+                .doc(payload.id)
+                .update({ players: data.players })
+                .then((result) => {
+                  docRef = db.collection('room').doc(payload.id);
+                  docRef.get().then((doc) => {
+                    context.commit('changeRoom', doc.data());
+                    context.commit('setValidPlayer', true);
+                    context.commit('changePosition', true)
+                  });
+                });
+            } else {
+              router.push('/rooms');
+            }
+          } else {
+            console.log('penuh');
+            router.push('/');
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -183,10 +192,13 @@ export default new Vuex.Store({
           // question: [context.state.quiz.allQuiz],
         })
         .then((response) => {
+          localStorage.setItem('room', response.id)
           console.log(response, 'ini responesssss')
           context.commit('changeRoom', response);
           context.commit('changePosition', false);
+          context.dispatch('getOneRoom');
           router.push(`/rooms/${response.id}`);
+          context.commit('changePosition', true)
         })
         .catch((err) => {
           console.log(err);
@@ -201,21 +213,29 @@ export default new Vuex.Store({
           console.log(querySnapshot)
           console.log(typeof querySnapshot)
           querySnapshot.forEach((doc) => {
-            // console.log(doc.data())
-            // console.log(doc, 'ini doc')
+            console.log(doc.data(), 'ini doc =========')
+            console.log(doc, 'ini doc')
             context.commit('changeRooms', { id: doc.id, ...doc.data() })
           });
         })
     },
-    getOneRoom(context) {
+    getOneRoom(context, id) {
+      console.log('masuk ke one')
       context.commit('changeRoom', '');
       db
         .collection('room')
-        .doc(this.$route.params.id)
         .onSnapshot((querySnapshot) => {
-          console.log(querySnapshot, 'ini snapshot')
-          context.state.room = querySnapshot.data();
-        });
+          console.log(querySnapshot)
+          console.log(typeof querySnapshot)
+          querySnapshot.forEach((doc) => {
+            // console.log(doc.data(), 'ini doc =========')
+            if (id === doc.id) {
+              context.commit('changeRoom', { id: doc.id, ...doc.data() });
+            }
+            // console.log(doc, 'ini doc')
+          });
+          // console.log(context.state.room)
+        })
     },
     startGame(context, id) {
       db

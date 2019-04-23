@@ -33,7 +33,7 @@
     <a-text
       cursor="rayOrigin: mouse"
       align="center"
-      :value="`${currentQuestion} and => current answer ${correct_answer}`"
+      :value="`${currentQuestion}`"
       raycaster="objects: .collidable; far: 8"
       geometry="primitive:plane;width: 10;"
       animation="property: position; from: 0 2.8 -9; to: 0 3 -9; loop: true; dir: alternate; easing:linear;dur:1000"
@@ -83,7 +83,10 @@ export default {
       index: 0,
       currentQuestion: "",
       questionIndex: 0,
-      currentRoom: []
+      currentRoom: [],
+      player: {
+
+      },
     };
   },
   methods: {
@@ -138,8 +141,8 @@ export default {
     // this.currentQuestion = 'after created';
   },
   computed: {
-    computed: mapState(["position"])
-  }
+    computed: mapState(["room"])
+  },
 };
 </script>
 
