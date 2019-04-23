@@ -77,8 +77,9 @@ export default new Vuex.Store({
       context.commit('changeAllQuiz', []);
       axios
         .get('https://opentdb.com/api.php?amount=50&type=boolean&difficulty=hard')
-        .then((response) => {
-          context.commit('changeAllQuiz', response);
+        .then(({ data }) => {
+          console.log(data, 'ini data')
+          context.commit('changeAllQuiz', data);
         })
         .catch((err) => {
           console.log(err);

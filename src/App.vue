@@ -103,6 +103,8 @@ export default {
   mounted() {
     this.$store.dispatch('getAllRooms')
     console.log(this.$store.state.room, 'ini room')
+    this.$store.dispatch('getAllQuiz')
+    console.log(this.$store.state.quiz.allQuiz, 'ini quiz')
   },
 }
 </script>
