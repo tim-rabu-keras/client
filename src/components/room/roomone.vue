@@ -38,21 +38,40 @@
 
     <a-text
       cursor="rayOrigin: mouse"
-      width="22"
-      value="True"
+      width="10"
+      v-bind:value="currentQuestion"
       geometry="primitive:plane"
-      animation="property: position; from: -6 0.7 -5; to: -6 0.9 -5; loop: true; dir: alternate; easing:linear;dur:1000"
+      animation="property: position; from: -6 2 -5; to: -6 2.3 -5; loop: true; dir: alternate; easing:linear;dur:1000"
     >
     </a-text>
 
     <a-text
-      width="22"
+      @click="yes"
+      cursor="rayOrigin: mouse"
+      width="6.8"
+      value="true"
+      geometry="primitive:plane"
+      animation="property: position; from: -2 0.44 -3; to: -2 0.58 -3; loop: true; dir: alternate; easing:linear;dur:1200"
+    >
+    </a-text>
+    <a-text
+      @click="no"
+      cursor="rayOrigin: mouse"
+      width="6.8"
+      value="false"
+      geometry="primitive:plane"
+      animation="property: position; from: 1 0.44 -3; to: 1 0.58 -3; loop: true; dir: alternate; easing:linear;dur:1200"
+    >
+    </a-text>
+
+    <!-- <a-text
+      width="10"
       align="right"
       cursor="rayOrigin: mouse"
-      value="False"
+      :value="question.results[1].question"
       geometry="primitive:plane"
       animation="property: position; from: 6 0.7 -5; to: 6 0.9 -5; loop: true; dir: alternate; easing:linear;dur:1000"
-    ></a-text>
+    ></a-text> -->
   </a-scene>
 </template>
 
@@ -66,18 +85,20 @@ export default {
       point: 1,
       test: true,
       color: '',
+      pertanyaan: 'hello',
+      pertanyaan2: 'helllo2',
       positions: [
         {
-          name: '2 3 -13',
-          score: '3 3 -13',
+          name: '2 7.5 -13',
+          score: '3 7.5 -13',
         },
         {
-          name: '2 4 -13',
-          score: '3 4 -13',
+          name: '2 6.5 -13',
+          score: '3 6.5 -13',
         },
         {
-          name: '2 5 -13',
-          score: '3 5 -13',
+          name: '2 8.5 -13',
+          score: '3 8.5 -13',
         },
       ],
       players: [
@@ -98,17 +119,23 @@ export default {
         },
       ],
       question: null,
+      currentQuestion: '',
+      questionIndex: 0,
     };
   },
   methods: {
     yes() {
       this.color = 'blue';
       this.point++;
+      this.questionIndex++;
+      this.currentQuestion = this.question[this.questionIndex].question;
       this.test = false;
     },
     no() {
       this.color = 'magenta';
       this.point++;
+      this.questionIndex++;
+      this.currentQuestion = this.question[this.questionIndex].question;
       this.test = true;
     },
     async getQuestion() {
@@ -116,7 +143,8 @@ export default {
         const { data } = await axios.get(
           'https://opentdb.com/api.php?amount=50&type=boolean&difficulty=hard',
         );
-        this.question = data;
+        this.question = data.results;
+        this.currentQuestion = data.results[0].question;
         console.log(this.question, 'iniiiii question');
       } catch (e) {
         console.log(e.response, 'ini error');
@@ -125,6 +153,8 @@ export default {
   },
   mounted() {
     this.getQuestion();
+    this.currentQuestion = this.question[0].question;
+    this.currentQuestion = 'after created';
   },
 };
 </script>
