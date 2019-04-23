@@ -78,7 +78,7 @@ export default new Vuex.Store({
       axios
         .get('https://opentdb.com/api.php?amount=50&type=boolean&difficulty=hard')
         .then(({ data }) => {
-          console.log(data, 'ini data')
+          console.log(data)
           context.commit('changeAllQuiz', data);
         })
         .catch((err) => {
@@ -183,7 +183,7 @@ export default new Vuex.Store({
             console.log(doc, 'ini doc')
             context.commit('changeRooms', { id: doc.id, ...doc.data() })
           });
-        });
+        })
     },
     getOneRoom(context, id) {
       context.commit('changeRoom', '');
