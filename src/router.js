@@ -26,6 +26,11 @@ export default new Router({
       ],
     },
     {
+      path: '/createroom',
+      name: 'createroom',
+      component: () => import('./views/CreateRoom.vue'),
+    },
+    {
       path: '/join/:id',
       name: 'joinRoom',
       component: () => import('./views/JoinRoom.vue'),

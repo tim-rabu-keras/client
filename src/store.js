@@ -3,11 +3,14 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import db from './api/firebase';
+import router from './router';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    keyForm: false,
+    validPlayer: false,
     worlds: [
       {
         sky: '',
@@ -23,7 +26,7 @@ export default new Vuex.Store({
       },
     ],
     rooms: [],
-    room: '',
+    room: null,
     quiz: {
       allQuiz: [],
       oneQuiz: '',
@@ -34,6 +37,12 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    setValidPlayer(state, payload) {
+      state.validPlayer = payload;
+    },
+    setKeyForm(state, payload) {
+      state.keyForm = payload;
+    },
     changeAllQuiz(state, payload) {
       if (payload.length === 0) {
         state.quiz.allQuiz = [];
@@ -81,20 +90,48 @@ export default new Vuex.Store({
       context.commit('changeOneQuiz', random);
     },
     joinRoom(context, payload) {
-      db
-        .collection('rooms')
-        .doc(payload.id)
-        .set(
-          { players: [{ name: payload.name, score: 0 }] },
-          { merge: true },
-        )
+      context.state.keyForm = false;
+      context.state.setValidPlayer = true;
+      let data;
+      const docRef = db.collection("room").doc(payload.id);
+
+      docRef.get()
         .then((response) => {
-          if (response !== null) {
-            context.dispatch('getAllRooms');
-          }
+          data = response.data();
+          data.players.push({ name: localStorage.getItem('name'), score: 0, status: 'active' });
+
+          db.collection('room')
+            .doc(payload.id)
+            .update({ players: data.players })
+            .then((result) => {
+              console.log('**********', result);
+              if (response !== null) {
+                context.room('changeRoom', result);
+              }
+            });
         })
         .catch((err) => {
           console.log(err);
+        });
+    },
+    checkRoom(context, id) {
+      db.collection('room').doc(id).get()
+        .then((response) => {
+          let activePlayers = [];
+          if (response.players.length >= 2) {
+            activePlayers = response.players.filter(x => x.player !== 'active');
+            if (activePlayers.length === 0) {
+              return db.collection('room')
+                .doc(id)
+                .update({ status: 'active' })
+                .then((updated) => {
+                  db.collection('room').doc(id).get()
+                    .then((newRecord) => {
+                      context.commit('changeRoom', newRecord);
+                    })
+                });
+            }
+          }
         });
     },
     createUser(context, payload) {
@@ -106,9 +143,11 @@ export default new Vuex.Store({
           score: 0,
           status: 'idle',
         })
+        // eslint-disable-next-line func-names
         .then((response) => {
           localStorage.setItem('id', response.id);
-          localStorage.setItem('name', response.name);
+          localStorage.setItem('name', payload);
+          router.push('/');
         })
         .catch((err) => {
           console.log(err);
@@ -119,11 +158,12 @@ export default new Vuex.Store({
         .collection('room')
         .add({
           status: 'idle',
-          players: [{ userId: localStorage.getItem('id') }],
+          players: [{ userId: localStorage.getItem('id'), name: payload.name, status: 'active' }],
           key: payload.key,
         })
         .then((response) => {
-          this.$router.push(`/rooms/${response.id}`);
+          context.commit('changeRoom', response);
+          router.push(`/rooms/${response.id}`);
         })
         .catch((err) => {
           console.log(err);
@@ -148,8 +188,7 @@ export default new Vuex.Store({
         .collection('room')
         .doc(id)
         .onSnapshot((querySnapshot) => {
-          console.log(querySnapshot);
-          context.commit('changeRoom', querySnapshot.data());
+          context.state.room = querySnapshot.data();
         });
     },
     startGame(context, id) {
