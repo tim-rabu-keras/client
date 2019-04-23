@@ -1,5 +1,5 @@
 <template>
-  <a-scene embedded id="vr">
+  <a-scene embedded id="vr" cursor="rayOrigin:mouse">
     <a-assets>
       <!-- sky -->
       <img id="asky" src="../assets/clouds.jpg" alt="" />
@@ -30,19 +30,23 @@
     <a-text color="#7d430e" position="6 3 -6" width="10" align="right" :value="point"></a-text>
 
     <a-text
-      @click="createroom"
-      cursor="rayOrigin: mouse"
-      width="22"
+      id="createRoom"
+      cursor="rayOrigin: mouse;maxDistance: 30"
+      raycaster="objects: .collidable; far: 8"
+      width="10"
+      align="left"
       value="create room"
       geometry="primitive:plane"
-      animation="property: position; from: -6 0.7 -5; to: -6 0.9 -5; loop: true; dir: alternate; easing:linear;dur:1000"
+      animation="property: position; from: -6 3 -5; to: -6 3.5 -5; loop: true; dir: alternate; easing:linear;dur:1000"
     >
     </a-text>
     <a-text
-      @click="joinroom"
-      width="22"
+      id="joinRoom"
+      width="10"
       align="right"
-      cursor="rayOrigin: mouse"
+      raycaster="objects: .collidable; far: 8"
+      position="6 0.7 -5"
+      cursor="rayOrigin: mouse;maxDistance: 30"
       value="joinroom"
       geometry="primitive:plane"
       animation="property: position; from: 6 0.7 -5; to: 6 0.9 -5; loop: true; dir: alternate; easing:linear;dur:1000"
@@ -60,15 +64,28 @@ export default {
     };
   },
   methods: {
-    createroom() {
+    createRoom() {
       this.test = false;
       // this.ischeck = false;
+      new Audio('http://soundbible.com/mp3/PINGAS-Richard-89282878.mp3').play();
       this.$router.push('/createroom');
     },
-    joinroom() {
+    joinRoom() {
       this.test = true;
-      this.$router.push('/rooms');
+      new Audio('http://soundbible.com/mp3/PINGAS-Richard-89282878.mp3').play();
+      this.$router.push('/room');
     },
+  },
+  mounted() {
+    document.getElementById('joinRoom').addEventListener('click', () => {
+      console.log('di click');
+      this.joinRoom();
+    });
+
+    document.getElementById('createRoom').addEventListener('click', () => {
+      console.log('di create room');
+      this.createRoom();
+    });
   },
 };
 </script>

@@ -28,6 +28,7 @@ export default new Vuex.Store({
     ],
     rooms: [],
     room: null,
+    allPlayers: [],
     quiz: {
       allQuiz: [],
       oneQuiz: '',
@@ -36,6 +37,7 @@ export default new Vuex.Store({
       name: '',
       score: 0,
     },
+    position: false,
   },
   mutations: {
     setValidPlayer(state, payload) {
@@ -70,8 +72,12 @@ export default new Vuex.Store({
         state.room = '';
       } else {
         state.room = payload;
+        
       }
     },
+    changePosition(state, payload) {
+      state.position = payload;
+    }
   },
   actions: {
     getAllQuiz(context) {
@@ -95,20 +101,22 @@ export default new Vuex.Store({
       context.state.keyForm = false;
       context.state.setValidPlayer = true;
       let data;
-      // let docRef = db.collection('room').doc(payload.id);
-
+      let docRef = db.collection('room').doc(payload.id);
+ 
       db.collection('room').doc(payload.id).get()
         .then((response) => {
           data = response.data();
           data.players.push({ name: localStorage.getItem('name'), score: 0, status: 'active' });
-
+ 
           db.collection('room')
             .doc(payload.id)
             .update({ players: data.players })
             .then((result) => {
-              db.collection('room').doc(payload.id).get();
-              context.commit('changeRoom', db.collection('room').doc(payload.id).get());
-              context.commit('setValidPlayer', true);
+              docRef = db.collection('room').doc(payload.id);
+              docRef.get().then((doc) => {
+                context.commit('changeRoom', doc.data());
+                context.commit('setValidPlayer', true);
+              });
             });
         })
         .catch((err) => {
@@ -154,6 +162,9 @@ export default new Vuex.Store({
           console.log(err);
         });
     },
+    changePosition(context) {
+      context.commit('changePosition', true);
+    },
     createRoom(context, payload) {
       console.log('masuk ke create room')
       console.log(payload, 'ini payload')
@@ -174,6 +185,7 @@ export default new Vuex.Store({
         .then((response) => {
           console.log(response, 'ini responesssss')
           context.commit('changeRoom', response);
+          context.commit('changePosition', false);
           router.push(`/rooms/${response.id}`);
         })
         .catch((err) => {
@@ -190,17 +202,18 @@ export default new Vuex.Store({
           console.log(typeof querySnapshot)
           querySnapshot.forEach((doc) => {
             // console.log(doc.data())
-            console.log(doc, 'ini doc')
+            // console.log(doc, 'ini doc')
             context.commit('changeRooms', { id: doc.id, ...doc.data() })
           });
         })
     },
-    getOneRoom(context, id) {
+    getOneRoom(context) {
       context.commit('changeRoom', '');
       db
         .collection('room')
-        .doc(id)
+        .doc(this.$route.params.id)
         .onSnapshot((querySnapshot) => {
+          console.log(querySnapshot, 'ini snapshot')
           context.state.room = querySnapshot.data();
         });
     },
