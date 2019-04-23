@@ -16,19 +16,18 @@
             <span class="headline">Create Account</span>
           </v-card-title>
           <v-card-text>
-            <v-container grid-list-md>
+            <v-container>
               <v-layout wrap align-center justify-center fill-height>
-                <v-flex xs12 sm6 md6 lg6>
+                <v-flex xs12 sm12 md12 lg12>
                   <v-text-field label="Username" required></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
-            <small>*indicates required field</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click="accountDialog = false">Close</v-btn>
-            <v-btn color="blue darken-1" flat>Save</v-btn>
+            <v-btn color="blue darken-1" flat @click="$store.dispatch('')">Submit</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
