@@ -25,8 +25,9 @@ export default {
       //
     }
   },
-  created() {
+  mounted() {
     this.$store.dispatch('getAllRooms')
+    console.log(this.$store.state.rooms, 'ini room')
   }
 }
 </script>

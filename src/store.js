@@ -130,9 +130,19 @@ export default new Vuex.Store({
         });
     },
     getAllRooms(context) {
-      context.commit('changeRooms', []);
+      console.log('masuk ke all')
+      // context.commit('changeRooms', []);
       db
         .collection('room')
+        .onSnapshot((querySnapshot) => {
+          console.log(querySnapshot)
+          console.log(typeof querySnapshot)
+          querySnapshot.forEach((doc) => {
+            // console.log(doc.data())
+            console.log(doc, 'ini doc')
+            context.commit('changeRooms', { id: doc.id, ...doc.data() })
+          });
+        })
       // .get()
       // .then((data) => {
       //   console.log(data[0].data())
@@ -190,6 +200,4 @@ export default new Vuex.Store({
         });
     },
   },
-  mutations: {},
-  actions: {},
 });
