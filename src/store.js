@@ -2,8 +2,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import db from './api/firebase';
 import { async } from 'q';
+import db from './api/firebase';
 
 Vue.use(Vuex);
 
@@ -62,7 +62,7 @@ export default new Vuex.Store({
       } else {
         state.room = payload;
       }
-    }
+    },
   },
   actions: {
     getAllQuiz(context) {
@@ -82,13 +82,9 @@ export default new Vuex.Store({
       context.commit('changeOneQuiz', random);
     },
     joinRoom(context, payload) {
-      db
-        .collection('rooms')
+      db.collection('rooms')
         .doc(payload.id)
-        .set(
-          { players: [{ name: payload.name, score: 0 }] },
-          { merge: true },
-        )
+        .set({ players: [{ name: payload.name, score: 0 }] }, { merge: true })
         .then((response) => {
           if (response !== null) {
             context.dispatch('getAllRooms');
@@ -99,8 +95,7 @@ export default new Vuex.Store({
         });
     },
     createUser(context, payload) {
-      db
-        .collection('user')
+      db.collection('user')
         .add({
           name: payload.name,
           score: 0,
@@ -115,8 +110,7 @@ export default new Vuex.Store({
         });
     },
     createRoom(context, payload) {
-      db
-        .collection('room')
+      db.collection('room')
         .add({
           status: 'idle',
           players: [{ userId: localStorage.getItem('id') }],
@@ -130,47 +124,21 @@ export default new Vuex.Store({
         });
     },
     getAllRooms(context) {
-      console.log('masuk ke all')
+      console.log('masuk ke all');
       // context.commit('changeRooms', []);
-      db
-        .collection('room')
-        .onSnapshot((querySnapshot) => {
-          console.log(querySnapshot)
-          console.log(typeof querySnapshot)
-          querySnapshot.forEach((doc) => {
-            // console.log(doc.data())
-            console.log(doc, 'ini doc')
-            context.commit('changeRooms', { id: doc.id, ...doc.data() })
-          });
-        })
-      // .get()
-      // .then((data) => {
-      //   console.log(data[0].data())
-      // })
-      // .onSnapshot(async (querySnapshot) => {
-      //   // const result = await Promise.all(
-      //   //   querySnapshot.docs.map(async (e) => {
-      //   //     const data = { id: e.id, ...e.data() }
-      //   //     data.user = await db.collection('user').doc(data.userId).get();
-      //   //     return data;
-      //   //   }),
-      //   // );
-      //   console.log(querySnapshot);
-      //   // context.commit('changeRooms', querySnapshot);
-      //   // querySnapshot.forEach((doc) => {
-      //   //   const newData = {
-      //   //     id: doc.id,
-      //   //     ...doc.data(),
-      //   //   };
-      //   // console.log(newData);
-      //   // context.commit('changeRooms', newData);
-      //   // });
-      // });
+      db.collection('room').onSnapshot((querySnapshot) => {
+        console.log(querySnapshot);
+        console.log(typeof querySnapshot);
+        querySnapshot.forEach((doc) => {
+          // console.log(doc.data())
+          console.log(doc, 'ini doc');
+          context.commit('changeRooms', { id: doc.id, ...doc.data() });
+        });
+      });
     },
     getOneRoom(context, id) {
       context.commit('changeRoom', '');
-      db
-        .collection('room')
+      db.collection('room')
         .doc(id)
         .onSnapshot((querySnapshot) => {
           console.log(querySnapshot);
@@ -178,20 +146,17 @@ export default new Vuex.Store({
         });
     },
     startGame(context, id) {
-      db
-        .collection('room')
+      db.collection('room')
         .doc(id)
         .update({
           status: 'active',
         })
-        .then((response) => {
-          return db
-            .collection('user')
-            .doc(localStorage.getItem('id'))
-            .update({
-              status: 'active',
-            });
-        })
+        .then(response => db
+          .collection('user')
+          .doc(localStorage.getItem('id'))
+          .update({
+            status: 'active',
+          }))
         .then((response) => {
           console.log(response);
         })
